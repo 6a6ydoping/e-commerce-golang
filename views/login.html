@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authorization</title>
+</head>
+<body>
+<form action="/auth" method="post">
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br>
+
+    <input type="radio" id="choice1" name="userType" value="Client" checked>
+    <label for="choice1">Client</label>
+
+    <input type="radio" id="choice2" name="userType" value="Seller">
+    <label for="choice2">Seller</label>
+
+    <input type="submit" value="Login">
+</form>
+</body>
+</html>
