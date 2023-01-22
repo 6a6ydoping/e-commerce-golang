@@ -72,24 +72,27 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
 
 		//парсим форму логина
-		email := r.FormValue("email")
-		password := r.FormValue("password")
-		userType := r.FormValue("userType")
-
-		fmt.Println(email)
-		fmt.Println(password)
-
-		////хешируем пароль
-		//passwordHash, err := middlewares.HashPassword(password)
-		//if err != nil {
-		//	log.Fatal("error in hashing pass")
-		//}
+		email, password, userType := r.FormValue("email"), r.FormValue("password"), r.FormValue("userType")
 
 		//ищем юзера по почте
-		err := middlewares.Login(email, password, userType)
+		err := middlewares.CheckEmailAndPasswordInDB(email, password, userType)
 		if err != nil {
 			http.Error(w, "No such user", http.StatusBadRequest)
 		}
+		//Создать токен и создать реквест с токеном
+		switch userType {
+		case "Seller":
+			var seller, err = middlewares.GetSellerByEmail(email)
+			if err != nil {
+				http.Error(w, "No such user", http.StatusBadRequest)
+			}
+			token, err := middlewares.CreateSellerToken(seller)
+			if err != nil {
+				http.Error(w, "Cant create jwt token", http.StatusBadRequest)
+			}
+			_, err = middlewares.MakeAuthRequest(token)
+		}
+
 		http.Redirect(w, r, "/home", http.StatusSeeOther)
 	} else {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
