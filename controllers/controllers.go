@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"time"
 )
 
 func HandleRegistration(w http.ResponseWriter, r *http.Request) {
@@ -90,7 +91,22 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				http.Error(w, "Cant create jwt token", http.StatusBadRequest)
 			}
-			_, err = middlewares.MakeAuthRequest(token)
+			//разобраться че делает эта функция
+			err = middlewares.MakeAuthRequest(token)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			fmt.Println("ok")
+			http.SetCookie(w, &http.Cookie{
+				Name:     "token",
+				Value:    token,
+				Path:     "/",
+				Expires:  time.Now().Add(time.Hour * 24),
+				HttpOnly: true,
+				SameSite: http.SameSiteStrictMode,
+			})
+			fmt.Println("ok")
 		}
 
 		http.Redirect(w, r, "/home", http.StatusSeeOther)
