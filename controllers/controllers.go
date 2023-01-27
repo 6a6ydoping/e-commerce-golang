@@ -7,7 +7,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"time"
 )
 
 func HandleRegistration(w http.ResponseWriter, r *http.Request) {
@@ -91,22 +90,17 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				http.Error(w, "Cant create jwt token", http.StatusBadRequest)
 			}
-			//разобраться че делает эта функция
-			err = middlewares.MakeAuthRequest(token)
+			middlewares.SetTokenToCookie(w, token)
+		case "Client":
+			var client, err = middlewares.GetClientByEmail(email)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
+				http.Error(w, "No such user", http.StatusBadRequest)
 			}
-			fmt.Println("ok")
-			http.SetCookie(w, &http.Cookie{
-				Name:     "token",
-				Value:    token,
-				Path:     "/",
-				Expires:  time.Now().Add(time.Hour * 24),
-				HttpOnly: true,
-				SameSite: http.SameSiteStrictMode,
-			})
-			fmt.Println("ok")
+			token, err := middlewares.CreateClientToken(client)
+			if err != nil {
+				http.Error(w, "Cant create jwt token", http.StatusBadRequest)
+			}
+			middlewares.SetTokenToCookie(w, token)
 		}
 
 		http.Redirect(w, r, "/home", http.StatusSeeOther)
@@ -124,3 +118,11 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		t.Execute(w, nil)
 	}
 }
+
+//func CheckCookie(w http.ResponseWriter, r *http.Request) {
+//	token, err := r.Cookie("token")
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//	fmt.Println(token)
+//}

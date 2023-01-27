@@ -115,16 +115,54 @@ func GetSellerByEmail(email string) (*models.Seller, error) {
 	return &seller, nil
 }
 
-func MakeAuthRequest(token string) error {
-	req, err := http.NewRequest("POST", "http://localhost:8000/private", nil)
+func GetClientByEmail(email string) (*models.Client, error) {
+	var client models.Client
+	err := initializers.DB.Model(models.Client{Email: email}).First(&client).Error
 	if err != nil {
-		return err
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, &helpers.UserNotFoundError{Message: "User not found"}
+		}
+		log.Fatal("Get client by email crashed")
 	}
-	req.Header.Add("Authorization", "Bearer "+token)
-	httpClient := http.Client{}
-	_, err = httpClient.Do(req)
+	return &client, nil
+
+}
+
+func GetRoleFromStringToken(tokenString string) (interface{}, error) {
+	token, err := decodeStringToken(tokenString)
 	if err != nil {
-		return err
+		log.Fatal(err)
+		return "", err
 	}
-	return nil
+	//Вытягиваем инфу юзера из токена
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		log.Fatal(err)
+	}
+	return claims["role"], nil
+}
+
+func decodeStringToken(tokenString string) (*jwt.Token, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return "", nil
+	})
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	return token, nil
+}
+
+func SetTokenToCookie(w http.ResponseWriter, token string) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "token",
+		Value:    token,
+		Path:     "/",
+		Expires:  time.Now().Add(time.Hour * 24),
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
+	})
 }
