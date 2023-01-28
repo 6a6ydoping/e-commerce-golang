@@ -131,12 +131,14 @@ func GetClientByEmail(email string) (*models.Client, error) {
 func GetRoleFromStringToken(tokenString string) (interface{}, error) {
 	token, err := decodeStringToken(tokenString)
 	if err != nil {
+		fmt.Println("error while decoding token string")
 		log.Fatal(err)
 		return "", err
 	}
 	//Вытягиваем инфу юзера из токена
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok || !token.Valid {
+		fmt.Println("error while getting info from users token")
 		log.Fatal(err)
 	}
 	return claims["role"], nil
@@ -147,7 +149,7 @@ func decodeStringToken(tokenString string) (*jwt.Token, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-		return "", nil
+		return []byte(os.Getenv("JWTSecretKey")), nil
 	})
 	if err != nil {
 		log.Fatal(err)

@@ -13,4 +13,5 @@ func RegisterRoutes() {
 	Router.HandleFunc("/login", controllers.HandleLogin)
 	Router.HandleFunc("/auth", controllers.HandleLogin)
 	Router.HandleFunc("/home", controllers.Home)
+	Router.HandleFunc("/createItem", controllers.CreateItem)
 }

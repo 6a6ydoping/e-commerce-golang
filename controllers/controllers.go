@@ -119,6 +119,32 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func CreateItem(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		token, err := r.Cookie("token")
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(token.Value)
+		role, err := middlewares.GetRoleFromStringToken(token.Value)
+		if err != nil {
+			fmt.Println("Error get role from string token")
+		}
+		fmt.Println(role)
+
+		t, err := template.ParseFiles("views/createItem.html")
+		if err != nil {
+			log.Fatal("Error parsing file...")
+		}
+		t.Execute(w, nil)
+	} else if r.Method == "POST" {
+		//Ищем селлера в бд
+
+		//Добавляем айтем в таблицу айтем с селлер айди
+	}
+
+}
+
 //func CheckCookie(w http.ResponseWriter, r *http.Request) {
 //	token, err := r.Cookie("token")
 //	if err != nil {
