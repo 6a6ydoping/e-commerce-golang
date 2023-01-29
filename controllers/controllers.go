@@ -121,34 +121,67 @@ func Home(w http.ResponseWriter, r *http.Request) {
 
 func CreateItem(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		token, err := r.Cookie("token")
+		// Берем токен
+		token, err := middlewares.GetTokenValueFromCookie(r)
 		if err != nil {
-			log.Fatal(err)
+			http.Error(w, "You have to login!", http.StatusUnauthorized)
 		}
-		fmt.Println(token.Value)
-		role, err := middlewares.GetRoleFromStringToken(token.Value)
+
+		// Проверяем не истек ли срок годности токена
+		isValid, err := middlewares.CheckTokenExpiry(token)
+		if !isValid {
+			http.Error(w, "Your session has ended, please login", http.StatusUnauthorized)
+			return
+		}
+		if err != nil {
+			http.Error(w, "Smth bad happened", http.StatusBadGateway)
+			return
+		}
+
+		//Получаем роль из токена
+		role, err := middlewares.GetRoleFromStringToken(token)
 		if err != nil {
 			fmt.Println("Error get role from string token")
 		}
-		fmt.Println(role)
-
-		t, err := template.ParseFiles("views/createItem.html")
-		if err != nil {
-			log.Fatal("Error parsing file...")
+		//Проверяем есть ли доступ к странице
+		//TODO: Сделать мапу с ролями и их доступами
+		if role == "Seller" || role == "Admin" {
+			t, err := template.ParseFiles("views/createItem.html")
+			if err != nil {
+				log.Fatal("Error parsing file...")
+			}
+			t.Execute(w, nil)
+		} else {
+			http.Error(w, "You have no permission", http.StatusBadGateway)
 		}
-		t.Execute(w, nil)
+
 	} else if r.Method == "POST" {
-		//Ищем селлера в бд
+		// Получаем токен селлера
+		token, err := middlewares.GetTokenValueFromCookie(r)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		//Проверяем срок годности токена
+		isValid, err := middlewares.CheckTokenExpiry(token)
+		if !isValid {
+			http.Error(w, "Your session has ended, please login", http.StatusUnauthorized)
+			return
+		}
+		if err != nil {
+			http.Error(w, "Smth bad happened", http.StatusBadGateway)
+			return
+		}
+		//Получаем айдишку из токена
+		id, err := middlewares.GetIDFromStringToken(token)
+		fmt.Println(id)
+
+		//Ищем seller_id в бд
+		seller, err := middlewares.GetSellerByID(id)
+		fmt.Println(err)
+		fmt.Println(seller.Email)
 
 		//Добавляем айтем в таблицу айтем с селлер айди
 	}
 
 }
-
-//func CheckCookie(w http.ResponseWriter, r *http.Request) {
-//	token, err := r.Cookie("token")
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//	fmt.Println(token)
-//}

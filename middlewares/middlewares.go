@@ -86,19 +86,20 @@ func CheckEmailAndPasswordInDB(email, password, userType string) error {
 }
 
 func CreateSellerToken(seller *models.Seller) (string, error) {
+	//TODO: Сделать че то с токен айди
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"seller_id": seller.ID,
-		"role":      "Seller",
-		"exp":       time.Now().Add(time.Hour * 2).Unix(),
+		"id":   seller.ID,
+		"role": "Seller",
+		"exp":  time.Now().Add(time.Hour * 2).Unix(),
 	})
 	return token.SignedString([]byte(os.Getenv("JWTSecretKey")))
 }
 
 func CreateClientToken(client *models.Client) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"seller_id": client.ID,
-		"role":      "Client",
-		"exp":       time.Now().Add(time.Hour * 2).Unix(),
+		"id":   client.ID,
+		"role": "Client",
+		"exp":  time.Now().Add(time.Hour * 2).Unix(),
 	})
 	return token.SignedString([]byte(os.Getenv("JWTSecretKey")))
 }
@@ -144,6 +145,22 @@ func GetRoleFromStringToken(tokenString string) (interface{}, error) {
 	return claims["role"], nil
 }
 
+func GetIDFromStringToken(tokenString string) (interface{}, error) {
+	token, err := decodeStringToken(tokenString)
+	if err != nil {
+		fmt.Println("error while decoding token string")
+		log.Fatal(err)
+		return "", err
+	}
+	//Вытягиваем инфу юзера из токена
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		fmt.Println("error while getting info from users token")
+		log.Fatal(err)
+	}
+	return claims["id"], nil
+}
+
 func decodeStringToken(tokenString string) (*jwt.Token, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -158,6 +175,11 @@ func decodeStringToken(tokenString string) (*jwt.Token, error) {
 	return token, nil
 }
 
+func GetTokenValueFromCookie(r *http.Request) (string, error) {
+	token, err := r.Cookie("token")
+	return token.Value, err
+}
+
 func SetTokenToCookie(w http.ResponseWriter, token string) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "token",
@@ -167,4 +189,39 @@ func SetTokenToCookie(w http.ResponseWriter, token string) {
 		HttpOnly: true,
 		SameSite: http.SameSiteStrictMode,
 	})
+}
+
+func GetSellerByID(id interface{}) (*models.Seller, error) {
+	var seller models.Seller
+	err := initializers.DB.Model(models.Seller{}).First(&seller, fmt.Sprint(id)).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, &helpers.UserNotFoundError{Message: "User not found"}
+		}
+		fmt.Println(err)
+		log.Fatal("Get seller by id crashed")
+	}
+	return &seller, nil
+}
+
+func CheckTokenExpiry(tokenString string) (bool, error) {
+	// Поменять на DecodeStringToken()
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(os.Getenv("JWTSecretKey")), nil
+	})
+	if err != nil {
+		return false, err
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		exp := int64(claims["exp"].(float64))
+		if time.Now().Unix() > exp {
+			return false, nil
+		}
+		return true, nil
+	}
+	return false, fmt.Errorf("invalid token")
 }
