@@ -106,7 +106,7 @@ func CreateClientToken(client *models.Client) (string, error) {
 
 func GetSellerByEmail(email string) (*models.Seller, error) {
 	var seller models.Seller
-	err := initializers.DB.Model(models.Seller{Email: email}).First(&seller).Error
+	err := initializers.DB.Where("email = ?", email).First(&seller).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, &helpers.UserNotFoundError{Message: "User not found"}
@@ -118,7 +118,7 @@ func GetSellerByEmail(email string) (*models.Seller, error) {
 
 func GetClientByEmail(email string) (*models.Client, error) {
 	var client models.Client
-	err := initializers.DB.Model(models.Client{Email: email}).First(&client).Error
+	err := initializers.DB.Where("email = ?", email).First(&client).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, &helpers.UserNotFoundError{Message: "User not found"}
