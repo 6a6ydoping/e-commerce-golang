@@ -4,6 +4,7 @@ import (
 	"e-commerce-app/initializers"
 	"e-commerce-app/middlewares"
 	"e-commerce-app/models"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
@@ -216,10 +217,11 @@ func CreateItem(w http.ResponseWriter, r *http.Request) {
 
 func GetAllSellingItems(w http.ResponseWriter, r *http.Request) {
 	var sellingItems []models.Item
-	err := initializers.DB.Find(&sellingItems).Error
-	if err != nil {
+	if err := initializers.DB.Select("id, name, price, quantity, rating").Find(&sellingItems).Error; err != nil {
 		fmt.Println("Failed to fetch all selling items")
 		http.Error(w, "Failed to fetch all selling items", http.StatusInternalServerError)
 	}
 	fmt.Println(sellingItems)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(sellingItems)
 }
