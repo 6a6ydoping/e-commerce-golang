@@ -61,6 +61,11 @@ func InsertClientIntoDataBase(c models.Client) error {
 	return result.Error
 }
 
+func InsertItemIntoDataBase(i models.Item) error {
+	result := initializers.DB.Create(&i)
+	return result.Error
+}
+
 func CheckEmailAndPasswordInDB(email, password, userType string) error {
 	if userType == "Seller" {
 		var seller = models.Seller{}
@@ -86,7 +91,6 @@ func CheckEmailAndPasswordInDB(email, password, userType string) error {
 }
 
 func CreateSellerToken(seller *models.Seller) (string, error) {
-	//TODO: Сделать че то с токен айди
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":   seller.ID,
 		"role": "Seller",

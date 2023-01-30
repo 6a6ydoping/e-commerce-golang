@@ -1,12 +1,14 @@
 package controllers
 
 import (
+	"e-commerce-app/initializers"
 	"e-commerce-app/middlewares"
 	"e-commerce-app/models"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func HandleRegistration(w http.ResponseWriter, r *http.Request) {
@@ -178,10 +180,46 @@ func CreateItem(w http.ResponseWriter, r *http.Request) {
 
 		//Ищем seller_id в бд
 		seller, err := middlewares.GetSellerByID(id)
-		fmt.Println(err)
+		if err != nil {
+			http.Error(w, "Please login again", http.StatusBadGateway)
+		}
 		fmt.Println(seller.Email)
+		// Парсим форму
+		r.ParseForm()
+		itemName := r.FormValue("itemName")
+		stringPrice := r.FormValue("price")
+		stringQuantity := r.FormValue("quantity")
+		// Меняем типы (СДЕЛАТЬ НОРМАЛЬНУЮ ФУНКЦИЮ)
+		price, err := strconv.ParseFloat(stringPrice, 32)
+		if err != nil {
+			fmt.Printf("Error type cast from str to f64")
+		}
+		var floatPrice float32 = float32(price)
+
+		ui64, err := strconv.ParseUint(stringQuantity, 10, 64)
+		if err != nil {
+			panic(err)
+		}
+
+		uintQuantity := uint32(ui64)
 
 		//Добавляем айтем в таблицу айтем с селлер айди
+		err = middlewares.InsertItemIntoDataBase(models.CreateItem(seller.ID, itemName, floatPrice, uintQuantity))
+		if err != nil {
+			http.Error(w, "Failed to add item", http.StatusBadGateway)
+			fmt.Println("Failed to add item")
+		}
+		http.Redirect(w, r, "/home", http.StatusSeeOther)
 	}
 
+}
+
+func GetAllSellingItems(w http.ResponseWriter, r *http.Request) {
+	var sellingItems []models.Item
+	err := initializers.DB.Find(&sellingItems).Error
+	if err != nil {
+		fmt.Println("Failed to fetch all selling items")
+		http.Error(w, "Failed to fetch all selling items", http.StatusInternalServerError)
+	}
+	fmt.Println(sellingItems)
 }
