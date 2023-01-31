@@ -221,7 +221,24 @@ func GetAllSellingItems(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Failed to fetch all selling items")
 		http.Error(w, "Failed to fetch all selling items", http.StatusInternalServerError)
 	}
-	fmt.Println(sellingItems)
+	// fmt.Println(sellingItems)
+	// w.Header().Set("Content-Type", "application/json")
+	// json.NewEncoder(w).Encode(sellingItems)
+	// w.Write(sellingItems)
+	// Encode selling items as JSON
+	jsonData, err := json.Marshal(sellingItems)
+	if err != nil {
+		// Handle error
+		return
+	}
+
+	// Set Content-Type header to "application/json"
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(sellingItems)
+
+	// Write JSON data to the response
+	_, err = w.Write(jsonData)
+	if err != nil {
+		// Handle error
+		return
+	}
 }

@@ -1,6 +1,7 @@
 import Header from './components/header';
 import RegistrationForm from './components/registrationForm'
 import './App.css';
+import SellingItems from './components/sellingItems';
 
 // const [firstName, setFirstName] = useState(null);
 // const [lastName, setLastName] = useState(null);
@@ -13,8 +14,9 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      <Header/>
-      <RegistrationForm/>
+      {/* <Header/> */}
+      {/* <RegistrationForm/> */}
+      <SellingItems/>
     </div>
   );
 }
