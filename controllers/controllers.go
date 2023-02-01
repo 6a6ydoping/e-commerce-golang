@@ -56,7 +56,7 @@ func HandleRegistration(w http.ResponseWriter, r *http.Request) {
 			log.Fatal("Error saving user to db")
 		}
 
-		//JWT???
+		//Редиректим на url/login
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		fmt.Println("User successfully added to db")
 	} else {

@@ -14,9 +14,9 @@ import SellingItems from './components/sellingItems';
 function App() {
   return (
     <div className="App">
-      {/* <Header/> */}
-      {/* <RegistrationForm/> */}
-      <SellingItems/>
+      <Header/>
+      <RegistrationForm/>
+      {/* <SellingItems/> */}
     </div>
   );
 }
