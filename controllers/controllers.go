@@ -126,8 +126,9 @@ func CreateItem(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		// Берем токен
 		token, err := middlewares.GetTokenValueFromCookie(r)
-		if err != nil {
+		if err != nil || token == "" {
 			http.Error(w, "You have to login!", http.StatusUnauthorized)
+			return
 		}
 
 		// Проверяем не истек ли срок годности токена

@@ -181,6 +181,11 @@ func decodeStringToken(tokenString string) (*jwt.Token, error) {
 
 func GetTokenValueFromCookie(r *http.Request) (string, error) {
 	token, err := r.Cookie("token")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			return "", err
+		}
+	}
 	return token.Value, err
 }
 
