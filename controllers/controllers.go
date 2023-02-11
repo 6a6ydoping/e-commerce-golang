@@ -9,7 +9,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"reflect"
 	"strconv"
 )
 
@@ -46,7 +45,6 @@ func HandleRegistration(w http.ResponseWriter, r *http.Request) {
 		email := fmt.Sprintf("%v", requestBody["email"])
 		password := fmt.Sprintf("%v", requestBody["password"])
 		userType := fmt.Sprintf("%v", requestBody["userType"])
-		fmt.Println(email, firstName, userType, reflect.TypeOf(password))
 
 		//хешируем пароль
 		passwordHash, err := middlewares.HashPassword(password)

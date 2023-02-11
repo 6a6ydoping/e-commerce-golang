@@ -1,9 +1,13 @@
 import React, {useState,setState} from 'react';
 import './style.css';
+import Header from './header';
+import { useNavigate } from 'react-router-dom';
 function AuthForm() {
     const [email, setEmail] = useState(null);
     const [password,setPassword] = useState(null);
     const [userType, setUserType] = useState(null);
+
+    const navigate = useNavigate();
 
     const handleInputChange = (e) => {
 
@@ -36,7 +40,13 @@ function AuthForm() {
               'Content-type': 'application/json',
             },
           })
-             .then((response) => response.json())
+             .then((response) => {
+                if(!response.ok){
+                    throw new Error(response.status)
+                }else{
+                    navigate('/home')
+                }
+             })
              .then((data) => {
                 console.log(data);
                 // Handle data
@@ -47,6 +57,8 @@ function AuthForm() {
     }
 
     return(
+        <>
+        <Header headerName="Login"/>
        <div className="form">
          <div className="form-body">
             <div className="userEmail__form">
@@ -71,6 +83,7 @@ function AuthForm() {
             </div>
             </div>
        </div>
+       </>
     )       
 }
 

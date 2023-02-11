@@ -1,5 +1,6 @@
 import React, {useState,setState} from 'react';
 import { useNavigate } from 'react-router-dom';
+import Header from './header';
 import './style.css';
 import axios from 'axios';
 function RegistrationForm() {
@@ -69,6 +70,8 @@ function RegistrationForm() {
     }
 
     return(
+        <>
+        <Header headerName="Registration"/>
         <div className="form">
             <div className="form-body">
                 <div className="username">
@@ -103,7 +106,7 @@ function RegistrationForm() {
                 <button onClick={()=>handleSubmit()} type="submit" className="btn">Register</button>
             </div>
         </div>
-       
+        </>
     )       
 }
 
