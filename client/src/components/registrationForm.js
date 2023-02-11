@@ -1,4 +1,5 @@
 import React, {useState,setState} from 'react';
+import { useNavigate } from 'react-router-dom';
 import './style.css';
 import axios from 'axios';
 function RegistrationForm() {
@@ -9,6 +10,8 @@ function RegistrationForm() {
     const [password,setPassword] = useState(null);
     const [confirmPassword,setConfirmPassword] = useState(null);
     let [userType, setUserType] = useState('Client');
+
+    const navigate = useNavigate()
 
     const handleInputChange = (e) => {
 
@@ -49,7 +52,13 @@ function RegistrationForm() {
               'Content-type': 'application/json',
             },
           })
-             .then((response) => response.json())
+             .then((response) => {
+                if (!response.ok){
+                    throw new Error(response.status)
+                }else{
+                    navigate('/auth')
+                }
+             })
              .then((data) => {
                 console.log(userType);
                 // Handle data
