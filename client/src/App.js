@@ -2,6 +2,7 @@ import Header from './components/header';
 import RegistrationForm from './components/registrationForm'
 import './App.css';
 import SellingItems from './components/sellingItems';
+import AuthForm from './components/authForm';
 
 // const [firstName, setFirstName] = useState(null);
 // const [lastName, setLastName] = useState(null);
@@ -16,6 +17,7 @@ function App() {
     <div className="App">
       <Header/>
       <RegistrationForm/>
+      {/* <AuthForm/> */}
       {/* <SellingItems/> */}
     </div>
   );

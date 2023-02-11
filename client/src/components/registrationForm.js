@@ -8,8 +8,10 @@ function RegistrationForm() {
     const [email, setEmail] = useState(null);
     const [password,setPassword] = useState(null);
     const [confirmPassword,setConfirmPassword] = useState(null);
+    let [userType, setUserType] = useState('Client');
 
     const handleInputChange = (e) => {
+
         const {id , value} = e.target;
         if(id === "firstName"){
             setFirstName(value);
@@ -26,27 +28,35 @@ function RegistrationForm() {
         if(id === "confirmPassword"){
             setConfirmPassword(value);
         }
-
     }
 
-    const handleSubmit  = () => {
-        console.log(firstName,lastName,email,password,confirmPassword);
-        axios.post(
-            'http://localhost:8000/register',
-            {
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                password: password,
-                confirmPassword: confirmPassword
-            }
-        )
-        .then(res => {
-            console.log(res.data);
-        })
-        .catch(err => {
-            console.error(err);
-        });
+    const handleOptionChange = (event) => {
+        setUserType(event.target.value)
+    }
+
+    const handleSubmit = () => {
+        fetch('http://localhost:8000/register', {
+            method: 'POST',
+            body: JSON.stringify({
+              firstName: firstName,
+              lastName: lastName,
+              password: password,
+              email: email,
+              password: password,
+              userType: userType,
+            }),
+            headers: {
+              'Content-type': 'application/json',
+            },
+          })
+             .then((response) => response.json())
+             .then((data) => {
+                console.log(userType);
+                // Handle data
+             })
+             .catch((err) => {
+                console.log(err.message);
+             });
     }
 
     return(
@@ -71,6 +81,13 @@ function RegistrationForm() {
                 <div className="confirm-password">
                     <label className="form__label" htmlFor="confirmPassword">Confirm Password </label>
                     <input className="form__input" type="password" id="confirmPassword" value={confirmPassword} onChange = {(e) => handleInputChange(e)} placeholder="Confirm Password"/>
+                </div>
+                <div className="user-type">
+                    <input type="radio" id="choice1" name="userType" value="Client" onChange={handleOptionChange} checked={userType === "Client"}/>
+                    <label for="choice1">Client</label>
+
+                    <input type="radio" id="choice2" name="userType" value="Seller" onChange={handleOptionChange} checked={userType === "Seller"}/>
+                    <label for="choice2">Seller</label>
                 </div>
             </div>
             <div class="footer">

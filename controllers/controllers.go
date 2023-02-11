@@ -9,10 +9,14 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"reflect"
 	"strconv"
 )
 
 func HandleRegistration(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	// перешли по url/register -> грузим вьюшку
 	if r.Method == "GET" {
 		t, err := template.ParseFiles("views/register.html")
@@ -22,14 +26,27 @@ func HandleRegistration(w http.ResponseWriter, r *http.Request) {
 		t.Execute(w, nil)
 
 	} else if r.Method == "POST" { //отправили запрос на регистрацию
+		var requestBody map[string]interface{}
+		decoder := json.NewDecoder(r.Body)
+		err := decoder.Decode(&requestBody)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		if r.Body == nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 		r.ParseForm()
 
 		//парсинг формы
-		firstName := r.FormValue("firstName")
-		lastName := r.FormValue("lastName")
-		email := r.FormValue("email")
-		password := r.FormValue("password")
-		userType := r.FormValue("userType")
+		firstName := fmt.Sprintf("%v", requestBody["firstName"])
+		lastName := fmt.Sprintf("%v", requestBody["lastName"])
+		email := fmt.Sprintf("%v", requestBody["email"])
+		password := fmt.Sprintf("%v", requestBody["password"])
+		userType := fmt.Sprintf("%v", requestBody["userType"])
+		fmt.Println(email, firstName, userType, reflect.TypeOf(password))
 
 		//хешируем пароль
 		passwordHash, err := middlewares.HashPassword(password)
@@ -59,8 +76,10 @@ func HandleRegistration(w http.ResponseWriter, r *http.Request) {
 		//Редиректим на url/login
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		fmt.Println("User successfully added to db")
+		w.WriteHeader(http.StatusOK)
 	} else {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		w.WriteHeader(http.StatusBadRequest)
 	}
 }
 
@@ -222,11 +241,6 @@ func GetAllSellingItems(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Failed to fetch all selling items")
 		http.Error(w, "Failed to fetch all selling items", http.StatusInternalServerError)
 	}
-	// fmt.Println(sellingItems)
-	// w.Header().Set("Content-Type", "application/json")
-	// json.NewEncoder(w).Encode(sellingItems)
-	// w.Write(sellingItems)
-	// Encode selling items as JSON
 	jsonData, err := json.Marshal(sellingItems)
 	if err != nil {
 		// Handle error
