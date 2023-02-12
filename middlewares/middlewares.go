@@ -196,9 +196,23 @@ func SetTokenToCookie(w http.ResponseWriter, token string) {
 		Value:    token,
 		Path:     "/",
 		Expires:  time.Now().Add(time.Hour * 24),
-		HttpOnly: true,
-		SameSite: http.SameSiteStrictMode,
+		HttpOnly: false,
+		SameSite: http.SameSiteNoneMode,
 	})
+}
+
+func DeleteTokenFromCookie(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("token")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			return
+		}
+		fmt.Println(err)
+		log.Fatal(err)
+	}
+	cookie.Expires = time.Unix(0, 0)
+	http.SetCookie(w, cookie)
+	fmt.Println("Cookie deleted")
 }
 
 func GetSellerByID(id interface{}) (*models.Seller, error) {

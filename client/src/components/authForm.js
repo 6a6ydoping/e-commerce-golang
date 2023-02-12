@@ -44,6 +44,7 @@ function AuthForm() {
                 if(!response.ok){
                     throw new Error(response.status)
                 }else{
+                    console.log(response.headers)
                     navigate('/home')
                 }
              })

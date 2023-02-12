@@ -14,9 +14,7 @@ import (
 )
 
 func HandleRegistration(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	helpers.EnableCors(&w)
 	// перешли по url/register -> грузим вьюшку
 	if r.Method == "GET" {
 		t, err := template.ParseFiles("views/register.html")
@@ -83,20 +81,29 @@ func HandleRegistration(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleLogin(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
-		t, err := template.ParseFiles("views/login.html")
+	if r.Method == "POST" {
+		helpers.EnableCors(&w)
+
+		var requestBody map[string]interface{}
+		decoder := json.NewDecoder(r.Body)
+		err := decoder.Decode(&requestBody)
 		if err != nil {
-			log.Fatal("Error parsing file...")
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
-		t.Execute(w, nil)
-	} else if r.Method == "POST" {
-		r.ParseForm()
+
+		if r.Body == nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 
 		//парсим форму логина
-		email, password, userType := r.FormValue("email"), r.FormValue("password"), r.FormValue("userType")
+		email := fmt.Sprintf("%v", requestBody["email"])
+		password := fmt.Sprintf("%v", requestBody["password"])
+		userType := fmt.Sprintf("%v", requestBody["userType"])
 
 		//ищем юзера по почте
-		err := middlewares.CheckEmailAndPasswordInDB(email, password, userType)
+		err = middlewares.CheckEmailAndPasswordInDB(email, password, userType)
 		if err != nil {
 			http.Error(w, "No such user", http.StatusBadRequest)
 		}
@@ -111,6 +118,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				http.Error(w, "Cant create jwt token", http.StatusBadRequest)
 			}
+			middlewares.DeleteTokenFromCookie(w, r)
 			middlewares.SetTokenToCookie(w, token)
 		case "Client":
 			var client, err = middlewares.GetClientByEmail(email)
@@ -121,10 +129,11 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				http.Error(w, "Cant create jwt token", http.StatusBadRequest)
 			}
+			middlewares.DeleteTokenFromCookie(w, r)
 			middlewares.SetTokenToCookie(w, token)
 		}
 
-		http.Redirect(w, r, "/home", http.StatusSeeOther)
+		w.WriteHeader(http.StatusOK)
 	} else {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}
@@ -141,6 +150,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateItem(w http.ResponseWriter, r *http.Request) {
+	helpers.EnableCors(&w)
 	if r.Method == "GET" {
 		// Берем токен
 		token, err := middlewares.GetTokenValueFromCookie(r)
@@ -262,6 +272,7 @@ func GetAllSellingItems(w http.ResponseWriter, r *http.Request) {
 func GetUserProfileInfo(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		helpers.EnableCors(&w)
+		fmt.Println(r.Cookie("token"))
 		token, err := middlewares.GetTokenValueFromCookie(r)
 		if err != nil {
 			fmt.Println(err)

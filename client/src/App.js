@@ -12,7 +12,7 @@ import {
 import SellingItems from './components/sellingItems';
 import AuthForm from './components/authForm';
 import AllItems from './components/allItems';
-
+import Profile from './components/profile';
 
 function App() {
   return (
@@ -23,6 +23,7 @@ function App() {
         <Route exact path="/auth"  element={<AuthForm />}/>
         <Route exact path="/home" element={<Home/>}/>
         <Route exact path="/menu" element={<AllItems/>}/>
+        <Route exact path="/profile" element={<Profile/>}/>
         </Routes>
     </Router>
     </div>
