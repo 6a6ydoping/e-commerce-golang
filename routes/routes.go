@@ -2,6 +2,7 @@ package routes
 
 import (
 	"e-commerce-app/controllers"
+
 	"github.com/rs/cors"
 
 	"github.com/gorilla/mux"
@@ -18,5 +19,5 @@ func RegisterRoutes() {
 	Router.HandleFunc("/auth", controllers.HandleLogin)
 	Router.HandleFunc("/home", controllers.Home)
 	Router.HandleFunc("/createItem", controllers.CreateItem)
-	Router.HandleFunc("/menu", controllers.GetAllSellingItems).Methods("GET")
+	Router.HandleFunc("/menu", controllers.GetAllSellingItems)
 }

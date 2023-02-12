@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"e-commerce-app/helpers"
 	"e-commerce-app/initializers"
 	"e-commerce-app/middlewares"
 	"e-commerce-app/models"
@@ -234,6 +235,7 @@ func CreateItem(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAllSellingItems(w http.ResponseWriter, r *http.Request) {
+	helpers.EnableCors(&w)
 	var sellingItems []models.Item
 	if err := initializers.DB.Select("id, name, price, quantity, rating").Find(&sellingItems).Error; err != nil {
 		fmt.Println("Failed to fetch all selling items")
@@ -250,6 +252,7 @@ func GetAllSellingItems(w http.ResponseWriter, r *http.Request) {
 
 	// Write JSON data to the response
 	_, err = w.Write(jsonData)
+	fmt.Println(jsonData)
 	if err != nil {
 		// Handle error
 		return

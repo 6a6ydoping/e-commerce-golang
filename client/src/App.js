@@ -11,6 +11,7 @@ import {
 } from "react-router-dom";
 import SellingItems from './components/sellingItems';
 import AuthForm from './components/authForm';
+import AllItems from './components/allItems';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Route exact path="/register"  element={<RegistrationForm />}/>
         <Route exact path="/auth"  element={<AuthForm />}/>
         <Route exact path="/home" element={<Home/>}/>
+        <Route exact path="/menu" element={<AllItems/>}/>
         </Routes>
     </Router>
     </div>
