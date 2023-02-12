@@ -1,0 +1,14 @@
+.item__form {
+    background-color: white;
+    border-radius: 10px;
+    height: 200px;
+    padding: 20px;
+    width: 600px;
+    margin-bottom: 20px;
+}
+
+h1,
+h2,
+h3 {
+    text-align: start;
+}

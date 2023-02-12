@@ -46,3 +46,9 @@ button:active {
     background-color: #14476e;
     outline: none;
 }
+
+a {
+    color: #279af1;
+    font-size: 30px;
+    text-align: start;
+}

@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import './style.css';
+import './allItems.css'
 import Header from './header';
 import { useNavigate } from 'react-router-dom';
 
@@ -31,10 +32,10 @@ function AllItems(){
     return (
         <>
           <div>
-            <p>All items</p>
+            <Header headerName="All items"/>
             <ul>
               {data.map((item) => (
-                <div>
+                <div className="item__form">
                     <h1>Name: {item.Name} </h1>
                     <h3>Price: {item.Price}</h3>
                 </div>
