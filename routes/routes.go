@@ -20,4 +20,5 @@ func RegisterRoutes() {
 	Router.HandleFunc("/home", controllers.Home)
 	Router.HandleFunc("/createItem", controllers.CreateItem)
 	Router.HandleFunc("/menu", controllers.GetAllSellingItems)
+	Router.HandleFunc("/profile", controllers.GetUserProfileInfo)
 }

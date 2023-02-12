@@ -214,6 +214,19 @@ func GetSellerByID(id interface{}) (*models.Seller, error) {
 	return &seller, nil
 }
 
+func GetClientByID(id interface{}) (*models.Client, error) {
+	var client models.Client
+	err := initializers.DB.Model(models.Client{}).First(&client, fmt.Sprint(id)).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, &helpers.UserNotFoundError{Message: "User not found"}
+		}
+		fmt.Println(err)
+		log.Fatal("Get client by id crashed")
+	}
+	return &client, nil
+}
+
 func CheckTokenExpiry(tokenString string) (bool, error) {
 	// Поменять на DecodeStringToken()
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {

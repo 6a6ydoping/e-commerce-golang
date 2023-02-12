@@ -4,10 +4,10 @@ import "gorm.io/gorm"
 
 type Client struct {
 	gorm.Model
-	FirstName string
-	LastName  string
-	Email     string
-	Password  string
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
 }
 
 func CreateClient(firstName, lastName, email, password string) Client {
