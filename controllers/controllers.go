@@ -92,11 +92,11 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if r.Body == nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+		if len(requestBody) == 0 {
+			http.Error(w, "empty request body", http.StatusBadRequest)
 			return
 		}
-
+		fmt.Println(requestBody)
 		//парсим форму логина
 		email := fmt.Sprintf("%v", requestBody["email"])
 		password := fmt.Sprintf("%v", requestBody["password"])
@@ -262,7 +262,7 @@ func GetAllSellingItems(w http.ResponseWriter, r *http.Request) {
 
 	// Write JSON data to the response
 	_, err = w.Write(jsonData)
-	fmt.Println(jsonData)
+	fmt.Println(sellingItems)
 	if err != nil {
 		// Handle error
 		return

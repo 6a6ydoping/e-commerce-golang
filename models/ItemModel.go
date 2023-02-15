@@ -13,4 +13,4 @@ type Item struct {
 
 func CreateItem(sellerID uint, itemName string, price float32, quantity uint32) Item {
 	return Item{SellerID: sellerID, Name: itemName, Price: price, Quantity: quantity, Rating: 0}
-}
+}	

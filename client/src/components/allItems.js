@@ -8,7 +8,7 @@ function AllItems(){
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:8000/menu', {
+        fetch(   {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json',
@@ -22,6 +22,7 @@ function AllItems(){
                 }
             })
             .then((data) => {
+                console.log(data)
                 setData(data);
             })
             .catch((err) => {
@@ -36,8 +37,8 @@ function AllItems(){
             <ul>
               {data.map((item) => (
                 <div className="item__form">
-                    <h1>Name: {item.Name} </h1>
-                    <h3>Price: {item.Price}</h3>
+                    <h1>Name: {item.name} </h1>
+                    <h3>Price: {item.price}</h3>
                 </div>
 
               ))}

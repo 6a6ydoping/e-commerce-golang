@@ -24,6 +24,7 @@ function App() {
         <Route exact path="/home" element={<Home/>}/>
         <Route exact path="/menu" element={<AllItems/>}/>
         <Route exact path="/profile" element={<Profile/>}/>
+        <Route exact path="/createItem" element={<Profile/>}/>
         </Routes>
     </Router>
     </div>
