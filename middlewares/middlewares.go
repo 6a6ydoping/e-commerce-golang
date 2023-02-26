@@ -137,9 +137,12 @@ func GetClientByID(id interface{}) (*models.Client, error) {
 	return &client, nil
 }
 
-func GetSellingItems(sellingItems *[]models.Item) error {
-	if err := initializers.DB.Select("id, name, price, quantity, rating").Find(&sellingItems).Error; err != nil {
-		fmt.Println("Failed to fetch all selling items")
+func GetSellingItems(sellingItems *[]models.Item, itemName string) error {
+	//if err := initializers.DB.Select("id, name, price, quantity, rating").Find(&sellingItems).Error; err != nil {
+	//	fmt.Println("Failed to fetch all selling items")
+	//	return errors.New("failed to fetch all selling items")
+	//}
+	if err := initializers.DB.Where("name LIKE ?", itemName+"%").Find(&sellingItems).Error; err != nil {
 		return errors.New("failed to fetch all selling items")
 	}
 	return nil

@@ -1,0 +1,9 @@
+.searchBar__container {
+    text-align: center;
+}
+
+.searchBar__form {
+    width: 350px;
+    margin-left: auto;
+    margin-right: auto;
+}

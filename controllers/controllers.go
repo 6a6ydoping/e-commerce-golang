@@ -244,9 +244,14 @@ func CreateItem(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAllSellingItems(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r.URL)
+	queryItemName := r.URL.Query().Get("query")
+	fmt.Println(queryItemName)
 	helpers.EnableCors(&w)
 	var sellingItems []models.Item
-	middlewares.GetSellingItems(&sellingItems)
+	fmt.Println(middlewares.GetSellingItems(&sellingItems, queryItemName))
+	fmt.Println("aoksd")
+	//fmt.Println(sellingItems[0].Name)
 	jsonData, err := json.Marshal(sellingItems)
 	if err != nil {
 		// Handle error

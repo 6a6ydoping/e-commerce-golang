@@ -9,6 +9,7 @@ import {
     useNavigate,
     Link,
 } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import SellingItems from "./components/sellingItems";
 import AuthForm from "./components/authForm";
 import ItemList from "./components/itemList";
@@ -33,7 +34,7 @@ function App() {
                         path="/menu"
                         element={
                             <SearchBar
-                                onSearch={(results) => setItems(results)}
+                                onSubmit={(results) => setItems(results)}
                             />
                         }
                     />
