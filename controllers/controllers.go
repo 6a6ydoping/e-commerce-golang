@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -245,6 +246,13 @@ func CreateItem(w http.ResponseWriter, r *http.Request) {
 
 func GetSellingItems(w http.ResponseWriter, r *http.Request) {
 	queryItemName := r.URL.Query().Get("query")
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Error reading request body", http.StatusInternalServerError)
+		return
+	}
+	defer r.Body.Close()
+	fmt.Println(string(body))
 	helpers.EnableCors(&w)
 	var sellingItems []models.Item
 	if err := middlewares.GetSellingItems(&sellingItems, queryItemName); err != nil {

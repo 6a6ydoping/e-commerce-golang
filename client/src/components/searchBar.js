@@ -5,8 +5,15 @@ import "./searchBar.css";
 import ItemList from "./itemList";
 
 function SearchBar(props) {
+    const options = ["Rating", "Price"];
     const [items, setItems] = useState([]);
     const [searchString, setSearchString] = useState("");
+    const [selectedOption, setSelectedOption] = useState(options[0].value);
+
+    const handleFilterByChange = (e) => {
+        const selected = e.target.value;
+        setSelectedOption(selected);
+    };
 
     const handleClick = async () => {
         if (searchString == "") {
@@ -15,7 +22,17 @@ function SearchBar(props) {
             setItems(json);
         } else {
             const response = await fetch(
-                `http://localhost:8000/menu?query=${searchString}`
+                `http://localhost:8000/menu?query=${searchString}`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        searchString: searchString,
+                        filterBy: selectedOption,
+                    }),
+                    headers: {
+                        "Content-type": "application/json",
+                    },
+                }
             );
             const json = await response.json();
             setItems(json);
@@ -44,7 +61,11 @@ function SearchBar(props) {
                                 search
                             </span>
                         </button>
-                        <select name="cars" id="cars">
+                        <select
+                            name="filterBy"
+                            id="filterBy"
+                            onChange={(e) => handleFilterByChange(e)}
+                        >
                             <option value="rating">Rating</option>
                             <option value="price">Price</option>
                         </select>
@@ -74,7 +95,11 @@ function SearchBar(props) {
                             search
                         </span>
                     </button>
-                    <select name="cars" id="cars">
+                    <select
+                        name="filterBy"
+                        id="filterBy"
+                        onChange={handleFilterByChange}
+                    >
                         <option value="rating">Rating</option>
                         <option value="price">Price</option>
                     </select>
