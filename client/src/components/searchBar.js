@@ -8,7 +8,7 @@ function SearchBar(props) {
     const options = ["Rating", "Price"];
     const [items, setItems] = useState([]);
     const [searchString, setSearchString] = useState("");
-    const [selectedOption, setSelectedOption] = useState(options[0].value);
+    const [selectedOption, setSelectedOption] = useState("rating");
 
     const handleFilterByChange = (e) => {
         const selected = e.target.value;

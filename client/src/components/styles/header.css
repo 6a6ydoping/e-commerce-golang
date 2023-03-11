@@ -1,0 +1,80 @@
+.navbar {
+    display: flex;
+    justify-content: flex-start;
+    height: 65px;
+    padding: 0;
+}
+
+.store_name__container {
+    padding: 0;
+    display: flex;
+    width: 15%;
+    align-items: center;
+    margin-left: 50px;
+}
+
+h3 {
+    padding-top: 6px;
+}
+
+.end__container {
+    display: flex;
+    margin-left: auto;
+    margin-right: 20px;
+    padding: 0;
+}
+
+.github__container {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+.balance__container {
+    display: flex;
+    align-items: center;
+}
+
+.searchBar__container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.searchBar {
+    width: 100%;
+    width: 468px;
+    height: 35px;
+    background-color: #262626;
+    border: 1px transparent;
+    border-radius: 8px;
+    color: #ccc;
+    font-family: GT Medium;
+    font-size: 0.92em;
+    height: 35px;
+    margin-right: 10px;
+    outline: none;
+    padding-left: 18px;
+    transition: all 0.3s;
+}
+
+#gamepad_logo {
+    width: 25px;
+    height: 26px;
+    margin-right: 10px;
+}
+#search_logo {
+    width: 25px;
+    height: 28px;
+}
+
+#github_logo {
+    width: 25px;
+    height: 27px;
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg)
+        brightness(102%) contrast(102%);
+}
+
+#balance_logo {
+    width: 25px;
+    height: 28px;
+}
