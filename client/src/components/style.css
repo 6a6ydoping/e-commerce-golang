@@ -37,13 +37,15 @@ body {
 }
 
 button {
-    background: #279af1;
-    border-radius: 10px;
-    color: white;
+    background-color: black;
 }
 
-button:active {
-    background-color: #14476e;
+button:hover {
+    cursor: pointer;
+}
+
+button:active,
+button:focus {
     outline: none;
 }
 
