@@ -8,6 +8,8 @@ import {
     Route,
     useNavigate,
     Link,
+    redirect,
+    Navigate,
 } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import SellingItems from "./components/sellingItems";
@@ -15,6 +17,7 @@ import AuthForm from "./components/authForm";
 import ItemList from "./components/itemList";
 import Profile from "./components/profile";
 import SearchBar from "./components/searchBar";
+import PageNotFound from "./components/pageNotFound";
 
 function App() {
     const [items, setItems] = useState([]);
@@ -39,7 +42,12 @@ function App() {
                         }
                     />
                     <Route exact path="/profile" element={<Profile />} />
-                    <Route exact path="/createItem" element={<Profile />} />
+                    <Route exact path="/item" element={<Profile />} />
+                    <Route
+                        path="/"
+                        element={<Navigate replace={true} to="/home" />}
+                    />
+                    <Route path="*" element={<PageNotFound />} />
                 </Routes>
             </Router>
         </div>
