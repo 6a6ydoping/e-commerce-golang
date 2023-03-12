@@ -11,6 +11,14 @@
     width: 15%;
     align-items: center;
     margin-left: 50px;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+}
+
+.store_name__container:active,
+.github__container:active,
+.balance__container:active {
+    transform: scale(0.945);
 }
 
 h3 {
@@ -28,12 +36,16 @@ h3 {
     display: flex;
     align-items: center;
     margin-right: 20px;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
 }
 .balance__container {
     margin-left: 20px;
     margin-right: 30px;
     display: flex;
     align-items: center;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
 }
 
 .github {
@@ -47,6 +59,7 @@ h3 {
 }
 
 #github_logo {
+    color: black;
     width: 25px;
     height: 27px;
     filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg)

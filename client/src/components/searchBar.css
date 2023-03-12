@@ -25,8 +25,23 @@
     outline: none;
     padding-left: 18px;
     transition: all 0.3s;
+    font-family: "Roboto Condensed", Arial, Helvetica, sans-serif;
 }
+
+.searchBar:focus {
+    background-color: #333;
+}
+
+.searchBar:active {
+    transform: scale(0.97);
+}
+
 #search_logo {
     width: 25px;
     height: 28px;
+}
+
+#search_logo:active {
+    transition: all 0.2s;
+    transform: scale(0.9);
 }
