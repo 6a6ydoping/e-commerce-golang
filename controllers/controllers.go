@@ -246,13 +246,12 @@ func CreateItem(w http.ResponseWriter, r *http.Request) {
 
 func GetSellingItems(w http.ResponseWriter, r *http.Request) {
 	queryItemName := r.URL.Query().Get("query")
-	queryOrderBy := r.URL.Query().Get("orderBy")
-	if queryOrderBy == "" || queryItemName == "" {
-		http.Error(w, "Order by or item name value not given", http.StatusBadRequest)
-	}
+	fmt.Println(queryItemName)
+	//queryOrderBy := r.URL.Query().Get("orderBy")
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "Error reading request body", http.StatusInternalServerError)
+		fmt.Println("Error here")
 		return
 	}
 	defer r.Body.Close()
@@ -267,7 +266,7 @@ func GetSellingItems(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println(sellingItems[0].Name)
 	jsonData, err := json.Marshal(sellingItems)
 	if err != nil {
-		// Handle error
+		fmt.Println("Error in marshalling")
 		return
 	}
 
@@ -278,7 +277,7 @@ func GetSellingItems(w http.ResponseWriter, r *http.Request) {
 	_, err = w.Write(jsonData)
 	fmt.Println(sellingItems)
 	if err != nil {
-		// Handle error
+		fmt.Println("Error in writing json to response")
 		return
 	}
 }

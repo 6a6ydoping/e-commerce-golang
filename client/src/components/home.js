@@ -1,13 +1,14 @@
-import React, {useState,setState} from 'react';
-import { Link } from 'react-router-dom';
-import Header from './header';
-import './style.css';
+import React, { useState, setState } from "react";
+import { Link } from "react-router-dom";
+import Header from "./header";
+import SellingItems from "./sellingItems";
+import "./style.css";
 
-function Home(){
-    return(
+function Home() {
+    return (
         <>
-        <Header headerName="Home page"/>
-        <Link to="/menu">All items page</Link>
+            <Header headerName="Home page" />
+            <SellingItems />
         </>
     );
 }

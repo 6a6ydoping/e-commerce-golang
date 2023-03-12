@@ -43,7 +43,7 @@ function Header(props) {
                         </g>
                     </svg>
                     <h3>
-                        <a href="https://github.com/6a6ydoping">
+                        <a href="https://github.com/6a6ydoping" target="_blank">
                             <h3 className="github">6a6ydoping</h3>
                         </a>
                     </h3>
