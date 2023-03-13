@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import SearchBar from "./searchBar";
 import "./styles/header.css";
 import "./styles/header.css";
 function Header(props) {
+    const [searchString, setSearchString] = useState("");
+
+    const handleSearch = (query) => {
+        console.log("HANDLE SEARCH" + query);
+        setSearchString(query);
+        props.onSearch(query);
+    };
+
     return (
         <nav className="navbar">
             <div className="store_name__container">
@@ -22,7 +30,7 @@ function Header(props) {
                 </svg>
                 <h3 className="store_name">Game Store</h3>
             </div>
-            <SearchBar />
+            <SearchBar onSearch={handleSearch} />
             <div className="end__container">
                 <div className="github__container">
                     <svg

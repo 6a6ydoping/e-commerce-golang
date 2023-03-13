@@ -2,20 +2,26 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./styles/sellingItems.css";
 
-const SellingItems = () => {
+const SellingItems = (props) => {
     const [sellingItems, setSellingItems] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios
-            .get("http://localhost:8000/menu")
-            .then((res) => {
+        const fetchSellingItems = async () => {
+            try {
+                console.log("SELLING ITEMS = " + props.query);
+                const res = await axios.get(
+                    `http://localhost:8000/menu?query=${props.query}`
+                );
                 setSellingItems(res.data);
                 setLoading(false);
-            })
-            .catch((err) => console.error(err));
-    }, []);
-    console.log(sellingItems);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        fetchSellingItems();
+    }, [props.query]);
 
     if (loading) {
         return <div>Loading...</div>;

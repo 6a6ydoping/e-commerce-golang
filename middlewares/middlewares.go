@@ -6,9 +6,10 @@ import (
 	"e-commerce-app/models"
 	"errors"
 	"fmt"
+	"log"
+
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"log"
 )
 
 func HashPassword(password string) (string, error) {
@@ -142,8 +143,7 @@ func GetSellingItems(sellingItems *[]models.Item, itemName string) error {
 		if err := initializers.DB.Where("name LIKE ?", itemName+"%").Find(&sellingItems).Error; err != nil {
 			return errors.New("failed to fetch all selling items")
 		}
-	}
-	if err := initializers.DB.Find(&sellingItems).Error; err != nil {
+	} else if err := initializers.DB.Find(&sellingItems).Error; err != nil {
 		return errors.New("failed to fetch all selling items")
 	}
 	return nil

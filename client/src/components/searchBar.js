@@ -7,36 +7,16 @@ import ItemList from "./itemList";
 function SearchBar(props) {
     const options = ["Rating", "Price"];
     const [items, setItems] = useState([]);
+    const [inputValue, setInputValue] = useState("");
     const [searchString, setSearchString] = useState("");
     const [selectedOption, setSelectedOption] = useState("rating");
 
-    const handleFilterByChange = (e) => {
-        const selected = e.target.value;
-        setSelectedOption(selected);
+    const handleInputChange = (event) => {
+        setInputValue(event.target.value);
     };
 
-    const handleClick = async () => {
-        if (searchString == "") {
-            const response = await fetch(`http://localhost:8000/menu`);
-            const json = await response.json();
-            setItems(json);
-        } else {
-            const response = await fetch(
-                `http://localhost:8000/menu?query=${searchString}`,
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        searchString: searchString,
-                        filterBy: selectedOption,
-                    }),
-                    headers: {
-                        "Content-type": "application/json",
-                    },
-                }
-            );
-            const json = await response.json();
-            setItems(json);
-        }
+    const handleClick = () => {
+        props.onSearch(inputValue);
     };
 
     const handleSubmit = async () => {};
@@ -48,8 +28,8 @@ function SearchBar(props) {
                     <input
                         className="searchBar"
                         placeholder="Search games..."
-                        value={searchString}
-                        onChange={(e) => setSearchString(e.target.value)}
+                        value={inputValue}
+                        onChange={handleInputChange}
                     ></input>
                     <button type="button" onClick={handleClick}>
                         <svg

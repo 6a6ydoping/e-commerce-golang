@@ -136,7 +136,7 @@ func GetSellingItems(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		fmt.Println(err.Error())
 	}
-
+	fmt.Println(sellingItems)
 	//fmt.Println(sellingItems[0].Name)
 	jsonData, err := json.Marshal(sellingItems)
 	if err != nil {

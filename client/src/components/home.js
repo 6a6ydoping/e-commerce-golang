@@ -5,10 +5,16 @@ import SellingItems from "./sellingItems";
 import "./style.css";
 
 function Home() {
+    const [searchString, setSearchString] = useState("");
+
+    const handleSearch = (query) => {
+        setSearchString(query);
+    };
+
     return (
         <>
-            <Header headerName="Home page" />
-            <SellingItems />
+            <Header headerName="Home page" onSearch={handleSearch} />
+            <SellingItems query={searchString} />
         </>
     );
 }
